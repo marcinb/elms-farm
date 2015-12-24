@@ -22,6 +22,7 @@ createTileSet filename =
        tileSize = (32, 32)
      }
 
+plowedSoilTiles : TileSet
 plowedSoilTiles = createTileSet "plowed_soil.png"
 
 -- VIEW
