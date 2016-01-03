@@ -14,10 +14,10 @@ type alias Size = (Int, Int)
 mapSize : Size
 mapSize = (10, 10)
 
-type alias Map = Array.Array Int
+type alias MapLayer = Array.Array Int
 
-defaultMap : Map
-defaultMap =
+initialLayer : MapLayer
+initialLayer =
   let
     (mapW, mapH) = mapSize
   in
@@ -25,8 +25,8 @@ defaultMap =
 
 -- VIEW
 
-mapToForms : Map -> List Form
-mapToForms gameMap =
+layerToForms : MapLayer -> List Form
+layerToForms layer =
   let
     groundTile = TileSet.tile TileSet.plowedSoilTiles (0,5)
     (tileW, tileH) = groundTile.size
@@ -40,13 +40,13 @@ mapToForms gameMap =
         move (offsetX, offsetY) groundTile.form
       )
   in
-    Array.indexedMap mappingFn gameMap
+    Array.indexedMap mappingFn layer
       |> Array.toList
 
 
 view : (Int, Int) -> Element
 view (w,h) =
-    collage w h (mapToForms defaultMap)
+    collage w h (layerToForms initialLayer)
 
 main : Signal Element
 main =
