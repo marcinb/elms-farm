@@ -27,14 +27,14 @@ mapToForms : Map -> List Form
 mapToForms gameMap =
   let
     groundTile = TileSet.tile TileSet.plowedSoilTiles (0,5)
-    (tileW, tileH) = (32.0, 32.0)
+    (tileW, tileH) = groundTile.size
     mappingFn = (\i _ -> 
       let column = i % mapWidth
           row = i // mapHeight
-          offsetX = (toFloat column) * tileW
-          offsetY = (toFloat row) * tileH
+          offsetX = (toFloat column) * (toFloat tileW)
+          offsetY = (toFloat row) * (toFloat tileH)
       in
-        move (offsetX, offsetY) groundTile
+        move (offsetX, offsetY) groundTile.form
       )
   in
     Array.indexedMap mappingFn gameMap

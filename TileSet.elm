@@ -9,6 +9,11 @@ type alias TileSet =
   { path : String,
     tileSize: Size
   }
+
+type alias Tile =
+  { size: Size,
+    form: Form
+  }
    
 defaultTileSize : Size
 defaultTileSize =
@@ -26,11 +31,14 @@ createTileSet filename =
 plowedSoilTiles : TileSet
 plowedSoilTiles = createTileSet "plowed_soil.png"
 
-tile : TileSet -> (Int, Int) -> Form
+tile : TileSet -> (Int, Int) -> Tile
 tile tileSet (x,y) =
   let
     (w,h) = tileSet.tileSize
+    form = 
+      croppedImage (x * w, y * h) w h tileSet.path
+        |> toForm
   in
-    croppedImage (x * w, y * h) w h tileSet.path
-      |> toForm
-
+    { size = tileSet.tileSize,
+      form = form
+    }
