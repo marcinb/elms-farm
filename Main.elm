@@ -25,19 +25,27 @@ initialLayer =
 
 -- VIEW
 
+layerElementToTile : Int -> TileSet.Tile
+layerElementToTile layerElem =
+  case layerElem of
+    0 ->
+      TileSet.tile TileSet.plowedSoilTiles (0,5)
+    _ ->
+      TileSet.tile TileSet.grassTiles (2,5)
+
 layerToForm : MapLayer -> Form
 layerToForm layer =
   let
-    groundTile = TileSet.tile TileSet.plowedSoilTiles (0,5)
-    (tileW, tileH) = groundTile.size
     (mapW, mapH) = mapSize
-    mappingFn = (\i _ -> 
+    mappingFn = (\i layerElem -> 
       let column = i % mapW
           row = i // mapH
+          tile = layerElementToTile layerElem
+          (tileW, tileH) = tile.size
           offsetX = (toFloat column) * (toFloat tileW)
           offsetY = (toFloat row) * (toFloat tileH)
       in
-        move (offsetX, offsetY) groundTile.form
+        move (offsetX, offsetY) tile.form
       )
   in
     Array.indexedMap mappingFn layer

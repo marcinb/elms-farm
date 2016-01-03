@@ -25,9 +25,6 @@ createTileSet filename =
        tileSize = defaultTileSize
      }
 
-plowedSoilTiles : TileSet
-plowedSoilTiles = createTileSet "plowed_soil.png"
-
 tile : TileSet -> (Int, Int) -> Tile
 tile tileSet (x,y) =
   let
@@ -39,3 +36,8 @@ tile tileSet (x,y) =
     { size = tileSet.tileSize,
       form = form
     }
+
+plowedSoilTiles : TileSet
+plowedSoilTiles = createTileSet "plowed_soil.png"
+grassTiles : TileSet
+grassTiles = createTileSet "tall_grass.png"
