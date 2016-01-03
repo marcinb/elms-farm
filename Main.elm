@@ -9,17 +9,19 @@ import Array
 
 import TileSet
 
-mapWidth : Int
-mapWidth = 10
+type alias Size = (Int, Int)
 
-mapHeight : Int
-mapHeight = 10
+mapSize : Size
+mapSize = (10, 10)
 
 type alias Map = Array.Array Int
 
 defaultMap : Map
 defaultMap =
-  Array.repeat (mapWidth*mapHeight) 0
+  let
+    (mapW, mapH) = mapSize
+  in
+    Array.repeat (mapW*mapH) 0
 
 -- VIEW
 
@@ -28,9 +30,10 @@ mapToForms gameMap =
   let
     groundTile = TileSet.tile TileSet.plowedSoilTiles (0,5)
     (tileW, tileH) = groundTile.size
+    (mapW, mapH) = mapSize
     mappingFn = (\i _ -> 
-      let column = i % mapWidth
-          row = i // mapHeight
+      let column = i % mapW
+          row = i // mapH
           offsetX = (toFloat column) * (toFloat tileW)
           offsetY = (toFloat row) * (toFloat tileH)
       in
