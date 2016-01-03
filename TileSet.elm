@@ -2,6 +2,7 @@ module TileSet where
 
 import Graphics.Element exposing (..)
 import Graphics.Collage exposing (..)
+import Color
 
 type alias Size = (Int, Int)
 
@@ -36,6 +37,13 @@ tile tileSet (x,y) =
     { size = tileSet.tileSize,
       form = form
     }
+
+emptyTile : Tile
+emptyTile =
+  { size = (32, 32),
+    form = rect 32 32
+      |> filled (Color.rgba 0 0 0 0)
+  }
 
 plowedSoilTiles : TileSet
 plowedSoilTiles = createTileSet "plowed_soil.png"

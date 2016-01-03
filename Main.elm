@@ -28,7 +28,16 @@ groundLayer : MapLayer
 groundLayer = fillLayer 1
 
 plantsLayer : MapLayer
-plantsLayer = fillLayer 2
+plantsLayer = 
+  let
+    (mapW, mapH) = mapSize
+    initFn = (\i ->
+      if List.member i [4,13,33,34,35,53,60,69]
+      then 2
+      else 0
+    )
+  in
+    Array.initialize (mapW*mapH) initFn
 
 initialMap : Map
 initialMap =
@@ -44,7 +53,7 @@ layerElementToTile layerElem =
     2 ->
       TileSet.tile TileSet.grassTiles (2,5)
     _ ->
-      TileSet.tile TileSet.plowedSoilTiles (0,5)
+      TileSet.emptyTile
 
 layerToForm : MapLayer -> Form
 layerToForm layer =
