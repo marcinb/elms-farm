@@ -2,11 +2,8 @@ module Farm where
 
 import Graphics.Element exposing (..)
 import Graphics.Collage exposing (..)
-import Color exposing (..)
 
-import Keyboard
 import Window
-import Time
 
 import Array
 
