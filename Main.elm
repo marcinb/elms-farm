@@ -7,26 +7,7 @@ import Window
 
 import Array
 
-type alias TileSet = 
-  { path : String,
-    tileSize: (Int, Int)
-  }
-   
-defaultTileSize : (Int, Int) 
-defaultTileSize =
-  (32, 32)
-
-createTileSet : String -> TileSet
-createTileSet filename =
-  let
-    tileSetPath = "assets/tiles/" ++ filename
-  in
-     { path = tileSetPath,
-       tileSize = defaultTileSize
-     }
-
-plowedSoilTiles : TileSet
-plowedSoilTiles = createTileSet "plowed_soil.png"
+import TileSet
 
 mapWidth : Int
 mapWidth = 10
@@ -45,7 +26,7 @@ defaultMap =
 mapToForms : Map -> List Form
 mapToForms gameMap =
   let
-    groundTile = tile plowedSoilTiles (0,5)
+    groundTile = TileSet.tile TileSet.plowedSoilTiles (0,5)
     (tileW, tileH) = (32.0, 32.0)
     mappingFn = (\i _ -> 
       let column = i % mapWidth
@@ -59,14 +40,6 @@ mapToForms gameMap =
     Array.indexedMap mappingFn gameMap
       |> Array.toList
 
-
-tile : TileSet -> (Int, Int) -> Form
-tile tileSet (x,y) =
-  let
-    (w,h) = tileSet.tileSize
-  in
-    croppedImage (x * w, y * h) w h tileSet.path
-      |> toForm
 
 view : (Int, Int) -> Element
 view (w,h) =
