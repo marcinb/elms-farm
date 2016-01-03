@@ -14,8 +14,11 @@ type alias Size = (Int, Int)
 mapSize : Size
 mapSize = (10, 10)
 
-type alias MapLayer = Array.Array Int
 type alias Map = List MapLayer
+
+-- LAYER
+
+type alias MapLayer = Array.Array Int
 
 fillLayer : Int -> MapLayer
 fillLayer layerElem =
@@ -38,12 +41,6 @@ plantsLayer =
     )
   in
     Array.initialize (mapW*mapH) initFn
-
-initialMap : Map
-initialMap =
-  [ groundLayer, plantsLayer ]
-
--- VIEW
 
 layerElementToTile : Int -> TileSet.Tile
 layerElementToTile layerElem =
@@ -73,6 +70,12 @@ layerToForm layer =
     Array.indexedMap mappingFn layer
       |> Array.toList
       |> group
+
+-- VIEW
+
+initialMap : Map
+initialMap =
+  [ groundLayer, plantsLayer ]
 
 mapToForms : Map -> List Form
 mapToForms m =
