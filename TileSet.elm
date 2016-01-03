@@ -3,12 +3,14 @@ module TileSet where
 import Graphics.Element exposing (..)
 import Graphics.Collage exposing (..)
 
+type alias Size = (Int, Int)
+
 type alias TileSet = 
   { path : String,
-    tileSize: (Int, Int)
+    tileSize: Size
   }
    
-defaultTileSize : (Int, Int) 
+defaultTileSize : Size
 defaultTileSize =
   (32, 32)
 
