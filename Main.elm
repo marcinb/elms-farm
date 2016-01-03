@@ -25,8 +25,8 @@ initialLayer =
 
 -- VIEW
 
-layerToForms : MapLayer -> List Form
-layerToForms layer =
+layerToForm : MapLayer -> Form
+layerToForm layer =
   let
     groundTile = TileSet.tile TileSet.plowedSoilTiles (0,5)
     (tileW, tileH) = groundTile.size
@@ -42,11 +42,12 @@ layerToForms layer =
   in
     Array.indexedMap mappingFn layer
       |> Array.toList
+      |> group
 
 
 view : (Int, Int) -> Element
 view (w,h) =
-    collage w h (layerToForms initialLayer)
+    collage w h [ layerToForm initialLayer ]
 
 main : Signal Element
 main =
