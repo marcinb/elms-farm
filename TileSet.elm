@@ -15,14 +15,11 @@ type alias Tile =
     form: Form
   }
    
-defaultTileSize : Size
-defaultTileSize =
-  (32, 32)
-
 createTileSet : String -> TileSet
 createTileSet filename =
   let
     tileSetPath = "assets/tiles/" ++ filename
+    defaultTileSize = (32, 32)
   in
      { path = tileSetPath,
        tileSize = defaultTileSize
