@@ -15,23 +15,36 @@ mapSize : Size
 mapSize = (10, 10)
 
 type alias MapLayer = Array.Array Int
+type alias Map = List MapLayer
 
-initialLayer : MapLayer
-initialLayer =
+fillLayer : Int -> MapLayer
+fillLayer layerElem =
   let
     (mapW, mapH) = mapSize
   in
-    Array.repeat (mapW*mapH) 0
+    Array.repeat (mapW*mapH) layerElem
+
+groundLayer : MapLayer
+groundLayer = fillLayer 1
+
+plantsLayer : MapLayer
+plantsLayer = fillLayer 2
+
+initialMap : Map
+initialMap =
+  [ groundLayer, plantsLayer ]
 
 -- VIEW
 
 layerElementToTile : Int -> TileSet.Tile
 layerElementToTile layerElem =
   case layerElem of
-    0 ->
+    1 ->
       TileSet.tile TileSet.plowedSoilTiles (0,5)
-    _ ->
+    2 ->
       TileSet.tile TileSet.grassTiles (2,5)
+    _ ->
+      TileSet.tile TileSet.plowedSoilTiles (0,5)
 
 layerToForm : MapLayer -> Form
 layerToForm layer =
@@ -52,10 +65,13 @@ layerToForm layer =
       |> Array.toList
       |> group
 
+mapToForms : Map -> List Form
+mapToForms m =
+  List.map layerToForm m
 
 view : (Int, Int) -> Element
 view (w,h) =
-    collage w h [ layerToForm initialLayer ]
+    collage w h (mapToForms initialMap)
 
 main : Signal Element
 main =
