@@ -16,8 +16,8 @@ type alias Tile =
     form: Form
   }
    
-createTileSet : String -> TileSet
-createTileSet filename =
+initialize : String -> TileSet
+initialize filename =
   let
     tileSetPath = "assets/tiles/" ++ filename
     defaultTileSize = (32, 32)
@@ -46,6 +46,6 @@ emptyTile =
   }
 
 plowedSoilTiles : TileSet
-plowedSoilTiles = createTileSet "plowed_soil.png"
+plowedSoilTiles = initialize "plowed_soil.png"
 grassTiles : TileSet
-grassTiles = createTileSet "tall_grass.png"
+grassTiles = initialize "tall_grass.png"
