@@ -7,31 +7,21 @@ import TileSet
 
 -- LAYER
 
-type alias MapLayer = Array.Array Int
+type alias Layer = Array.Array Int
 type alias Size = (Int, Int)
 
-fillLayer : Size -> Int -> MapLayer
-fillLayer (w, h) layerElem =
+initialize : Size -> Int -> Layer
+initialize (w, h) layerElem =
   Array.repeat (w*h) layerElem
 
-layerElementToTile : Int -> TileSet.Tile
-layerElementToTile layerElem =
-  case layerElem of
-    1 ->
-      TileSet.tile TileSet.plowedSoilTiles (0,5)
-    2 ->
-      TileSet.tile TileSet.grassTiles (2,5)
-    _ ->
-      TileSet.emptyTile
-
-layerToForm : Size -> MapLayer -> Form
-layerToForm size layer =
+toForm : Size -> Layer -> Form
+toForm size layer =
   let
     (w, h) = size
     mappingFn = (\i layerElem -> 
       let column = i % w
           row = i // h
-          tile = layerElementToTile layerElem
+          tile = elementToTile layerElem
           (tileW, tileH) = tile.size
           offsetX = (toFloat column) * (toFloat tileW)
           offsetY = (toFloat row) * (toFloat tileH)
@@ -42,3 +32,13 @@ layerToForm size layer =
     Array.indexedMap mappingFn layer
       |> Array.toList
       |> group
+
+elementToTile : Int -> TileSet.Tile
+elementToTile elem =
+  case elem of
+    1 ->
+      TileSet.tile TileSet.plowedSoilTiles (0,5)
+    2 ->
+      TileSet.tile TileSet.grassTiles (2,5)
+    _ ->
+      TileSet.emptyTile
