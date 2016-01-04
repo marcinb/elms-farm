@@ -1,8 +1,8 @@
 module Layer where
 
 import Graphics.Collage exposing (..)
-
 import Array
+
 import TileSet
 
 type alias Layer =

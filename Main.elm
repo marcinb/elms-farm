@@ -2,7 +2,6 @@ module Farm where
 
 import Graphics.Element exposing (..)
 import Graphics.Collage exposing (..)
-
 import Array
 import Window
 
