@@ -7,21 +7,27 @@ import TileSet
 
 -- LAYER
 
-type alias Layer = Array.Array Int
+type alias Layer =
+  { size: Size,
+    elements: Array.Array Int
+  }
+
 type alias Size = (Int, Int)
 
 initialize : Size -> Int -> Layer
-initialize (w, h) layerElem =
-  Array.repeat (w*h) layerElem
+initialize (w, h) elem =
+  { size = (w, h),
+    elements = Array.repeat (w*h) elem
+  }
 
-toForm : Size -> Layer -> Form
-toForm size layer =
+toForm : Layer -> Form
+toForm layer =
   let
-    (w, h) = size
-    mappingFn = (\i layerElem -> 
+    (w, h) = layer.size
+    mappingFn = (\i elem -> 
       let column = i % w
           row = i // h
-          tile = elementToTile layerElem
+          tile = elementToTile elem
           (tileW, tileH) = tile.size
           offsetX = (toFloat column) * (toFloat tileW)
           offsetY = (toFloat row) * (toFloat tileH)
@@ -29,7 +35,7 @@ toForm size layer =
         move (offsetX, offsetY) tile.form
       )
   in
-    Array.indexedMap mappingFn layer
+    Array.indexedMap mappingFn layer.elements
       |> Array.toList
       |> group
 

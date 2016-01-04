@@ -22,22 +22,13 @@ groundLayer : Layer.Layer
 groundLayer = Layer.initialize mapSize 1
 
 plantsLayer : Layer.Layer
-plantsLayer = 
-  let
-    (mapW, mapH) = mapSize
-    initFn = (\i ->
-      if List.member i [4,13,33,34,35,53,60,69]
-      then 2
-      else 0
-    )
-  in
-    Array.initialize (mapW*mapH) initFn
+plantsLayer = Layer.initialize mapSize 2
 
 -- VIEW
 
 mapToForms : Map -> List Form
 mapToForms m =
-  List.map (Layer.toForm mapSize) m
+  List.map Layer.toForm m
 
 view : (Int, Int) -> Element
 view (w,h) =
