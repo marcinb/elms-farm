@@ -5,8 +5,6 @@ import Graphics.Collage exposing (..)
 import Array
 import TileSet
 
--- LAYER
-
 type alias Layer =
   { size: Size,
     elements: Array.Array Int
