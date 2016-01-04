@@ -3,34 +3,25 @@ module Farm where
 import Graphics.Element exposing (..)
 import Graphics.Collage exposing (..)
 
+import Array
 import Window
 
-import Array
-
-import TileSet
+import Layer
 
 type alias Size = (Int, Int)
+type alias Map = List Layer.MapLayer
 
 mapSize : Size
 mapSize = (10, 10)
 
-type alias Map = List MapLayer
+initialMap : Map
+initialMap =
+  [ groundLayer, plantsLayer ]
 
--- LAYER
+groundLayer : Layer.MapLayer
+groundLayer = Layer.fillLayer mapSize 1
 
-type alias MapLayer = Array.Array Int
-
-fillLayer : Int -> MapLayer
-fillLayer layerElem =
-  let
-    (mapW, mapH) = mapSize
-  in
-    Array.repeat (mapW*mapH) layerElem
-
-groundLayer : MapLayer
-groundLayer = fillLayer 1
-
-plantsLayer : MapLayer
+plantsLayer : Layer.MapLayer
 plantsLayer = 
   let
     (mapW, mapH) = mapSize
@@ -42,44 +33,11 @@ plantsLayer =
   in
     Array.initialize (mapW*mapH) initFn
 
-layerElementToTile : Int -> TileSet.Tile
-layerElementToTile layerElem =
-  case layerElem of
-    1 ->
-      TileSet.tile TileSet.plowedSoilTiles (0,5)
-    2 ->
-      TileSet.tile TileSet.grassTiles (2,5)
-    _ ->
-      TileSet.emptyTile
-
-layerToForm : MapLayer -> Form
-layerToForm layer =
-  let
-    (mapW, mapH) = mapSize
-    mappingFn = (\i layerElem -> 
-      let column = i % mapW
-          row = i // mapH
-          tile = layerElementToTile layerElem
-          (tileW, tileH) = tile.size
-          offsetX = (toFloat column) * (toFloat tileW)
-          offsetY = (toFloat row) * (toFloat tileH)
-      in
-        move (offsetX, offsetY) tile.form
-      )
-  in
-    Array.indexedMap mappingFn layer
-      |> Array.toList
-      |> group
-
 -- VIEW
-
-initialMap : Map
-initialMap =
-  [ groundLayer, plantsLayer ]
 
 mapToForms : Map -> List Form
 mapToForms m =
-  List.map layerToForm m
+  List.map (Layer.layerToForm mapSize) m
 
 view : (Int, Int) -> Element
 view (w,h) =
