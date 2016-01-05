@@ -4,7 +4,7 @@ import Graphics.Element exposing (..)
 import Graphics.Collage exposing (..)
 import Color
 
-type alias Size = (Int, Int)
+import Common exposing (..)
 
 type alias TileSet = 
   { path : String,

@@ -3,14 +3,13 @@ module Layer where
 import Graphics.Collage exposing (..)
 import Array
 
+import Common exposing (..)
 import TileSet
 
 type alias Layer =
   { size: Size,
     elements: Array.Array Int
   }
-
-type alias Size = (Int, Int)
 
 initialize : Size -> Int -> Layer
 initialize (w, h) elem =

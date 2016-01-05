@@ -5,9 +5,9 @@ import Graphics.Collage exposing (..)
 import Array
 import Window
 
+import Common exposing (..)
 import Layer
 
-type alias Size = (Int, Int)
 type alias Map = List Layer.Layer
 
 mapSize : Size
