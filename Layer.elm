@@ -10,13 +10,13 @@ import Tile
 
 type alias Layer =
   { size: Size,
-    elements: Array.Array (Maybe Tile.Tile)
+    tiles: Array.Array (Maybe Tile.Tile)
   }
 
 initialize : Size -> Tile.Tile -> Layer
 initialize (w, h) tile =
   { size = (w, h),
-    elements = Array.repeat (w*h) (Just tile)
+    tiles = Array.repeat (w*h) (Just tile)
   }
 
 -- VIEW:
@@ -25,7 +25,7 @@ toForm : Layer -> Form
 toForm layer =
   let
     (w, h) = layer.size
-    mappingFn = (\i tile -> 
+    draw = (\i tile -> 
       let column = i % w
           row = i // h
           (tileW, tileH) = Tile.defaultSize
@@ -35,7 +35,7 @@ toForm layer =
         move (offsetX, offsetY) (tileForm tile)
       )
   in
-    Array.indexedMap mappingFn layer.elements
+    Array.indexedMap draw layer.tiles
       |> Array.toList
       |> group
 
