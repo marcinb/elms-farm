@@ -9,38 +9,32 @@ import Common exposing (..)
 -- MODEL:
 
 type Tile =
-  Empty 
-  | Soil 
-  | Grass
+  Soil | Grass
 
 -- VIEW:
+
+defaultSize : Size
+defaultSize = (32, 32)
 
 toForm : Tile -> Collage.Form
 toForm tile =
   let
     path = tileSheetPath tile
-    (w,h) = size tile
+    (w,h) = defaultSize
     (x,y) = (0,5)
   in
-    case path of
-      Just path ->
-        croppedImage (x * w, y * h) w h path
-          |> Collage.toForm
-      Nothing ->
-        emptyTileForm
+    croppedImage (x * w, y * h) w h path
+      |> Collage.toForm
 
 emptyTileForm : Collage.Form
 emptyTileForm =
   let
-    (w,h) = size Empty
+    (w,h) = defaultSize 
   in
     Collage.rect (toFloat w) (toFloat h)
       |> Collage.filled (Color.rgba 0 0 0 0)
 
-size : Tile -> Size
-size _ = (32, 32)
-
-tileSheetPath : Tile -> Maybe String
+tileSheetPath : Tile -> String
 tileSheetPath tile =
   let
     path filename =
@@ -48,8 +42,6 @@ tileSheetPath tile =
   in
     case tile of
       Soil ->
-        Just (path "plowed_soil.png")
+        path "plowed_soil.png"
       Grass ->
-        Just (path "tall_grass.png")
-      _ ->
-        Nothing
+        path "tall_grass.png"
