@@ -26,13 +26,13 @@ plantsLayer = Layer.initialize mapSize Tile.Grass
 
 -- VIEW
 
-mapToForms : Map -> List Form
-mapToForms m =
-  List.map Layer.toForm m
+mapView : Map -> List Form
+mapView m =
+  List.map Layer.view m
 
 view : (Int, Int) -> Element
 view (w,h) =
-    collage w h (mapToForms initialMap)
+    collage w h (mapView initialMap)
 
 main : Signal Element
 main =

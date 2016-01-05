@@ -1,7 +1,7 @@
 module Tile where
 
 import Graphics.Element exposing (..)
-import Graphics.Collage as Collage
+import Graphics.Collage exposing (..)
 import Color
 
 import Common exposing (..)
@@ -16,23 +16,23 @@ type Tile =
 defaultSize : Size
 defaultSize = (32, 32)
 
-toForm : Tile -> Collage.Form
-toForm tile =
+view : Tile -> Form
+view tile =
   let
     path = tileSheetPath tile
     (w,h) = defaultSize
     (x,y) = (0,5)
   in
     croppedImage (x * w, y * h) w h path
-      |> Collage.toForm
+      |> toForm
 
-emptyTileForm : Collage.Form
-emptyTileForm =
+defaultView : Form
+defaultView =
   let
     (w,h) = defaultSize 
   in
-    Collage.rect (toFloat w) (toFloat h)
-      |> Collage.filled (Color.rgba 0 0 0 0)
+    rect (toFloat w) (toFloat h)
+      |> filled (Color.rgba 0 0 0 0)
 
 tileSheetPath : Tile -> String
 tileSheetPath tile =

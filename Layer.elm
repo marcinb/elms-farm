@@ -21,8 +21,8 @@ initialize (w, h) tile =
 
 -- VIEW:
 
-toForm : Layer -> Form
-toForm layer =
+view : Layer -> Form
+view layer =
   let
     (w, h) = layer.size
     draw = (\i tile -> 
@@ -32,17 +32,17 @@ toForm layer =
           offsetX = (toFloat column) * (toFloat tileW)
           offsetY = (toFloat row) * (toFloat tileH)
       in
-        move (offsetX, offsetY) (tileForm tile)
+        move (offsetX, offsetY) (tileView tile)
       )
   in
     Array.indexedMap draw layer.tiles
       |> Array.toList
       |> group
 
-tileForm : Maybe Tile.Tile -> Form
-tileForm tile =
+tileView : Maybe Tile.Tile -> Form
+tileView tile =
   case tile of
     Just tile ->
-      Tile.toForm tile
+      Tile.view tile
     Nothing ->
-      Tile.emptyTileForm
+      Tile.defaultView
