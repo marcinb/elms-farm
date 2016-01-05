@@ -4,44 +4,37 @@ import Graphics.Collage exposing (..)
 import Array
 
 import Common exposing (..)
-import TileSet
+import Tile
+
+-- MODEL:
 
 type alias Layer =
   { size: Size,
-    elements: Array.Array Int
+    elements: Array.Array Tile.Tile
   }
 
-initialize : Size -> Int -> Layer
-initialize (w, h) elem =
+initialize : Size -> Tile.Tile -> Layer
+initialize (w, h) tile =
   { size = (w, h),
-    elements = Array.repeat (w*h) elem
+    elements = Array.repeat (w*h) tile
   }
+
+-- VIEW:
 
 toForm : Layer -> Form
 toForm layer =
   let
     (w, h) = layer.size
-    mappingFn = (\i elem -> 
+    mappingFn = (\i tile -> 
       let column = i % w
           row = i // h
-          tile = elementToTile elem
-          (tileW, tileH) = tile.size
+          (tileW, tileH) = Tile.size tile
           offsetX = (toFloat column) * (toFloat tileW)
           offsetY = (toFloat row) * (toFloat tileH)
       in
-        move (offsetX, offsetY) tile.form
+        move (offsetX, offsetY) (Tile.toForm tile)
       )
   in
     Array.indexedMap mappingFn layer.elements
       |> Array.toList
       |> group
-
-elementToTile : Int -> TileSet.Tile
-elementToTile elem =
-  case elem of
-    1 ->
-      TileSet.tile TileSet.plowedSoilTiles (0,5)
-    2 ->
-      TileSet.tile TileSet.grassTiles (2,5)
-    _ ->
-      TileSet.emptyTile

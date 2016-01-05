@@ -7,6 +7,7 @@ import Window
 
 import Common exposing (..)
 import Layer
+import Tile
 
 type alias Map = List Layer.Layer
 
@@ -18,10 +19,10 @@ initialMap =
   [ groundLayer, plantsLayer ]
 
 groundLayer : Layer.Layer
-groundLayer = Layer.initialize mapSize 1
+groundLayer = Layer.initialize mapSize Tile.Soil
 
 plantsLayer : Layer.Layer
-plantsLayer = Layer.initialize mapSize 2
+plantsLayer = Layer.initialize mapSize Tile.Grass
 
 -- VIEW
 
