@@ -12,41 +12,41 @@ import Tile
 
 -- MODEL
 
-type alias Map = List Layer.Layer
+type alias World = List Layer.Layer
 
-mapSize : Size
-mapSize = (10, 10)
+worldSize : Size
+worldSize = (10, 10)
 
-initialMap : Map
-initialMap =
+initialWorld : World
+initialWorld =
   [ groundLayer, plantsLayer ]
 
 groundLayer : Layer.Layer
-groundLayer = Layer.initialize mapSize Tile.Soil
+groundLayer = Layer.initialize worldSize Tile.Soil
 
 plantsLayer : Layer.Layer
-plantsLayer = Layer.initialize mapSize (Tile.Grass 1)
+plantsLayer = Layer.initialize worldSize (Tile.Grass 1)
 
 -- UPDATE
 
-update : Float -> Map -> Map
-update tickTime map =
-  List.map (Layer.update tickTime) map
+update : Float -> World -> World
+update tickTime world =
+  List.map (Layer.update tickTime) world
 
 -- VIEW
 
-mapView : Map -> List Form
-mapView m =
-  List.map Layer.view m
+worldView : World -> List Form
+worldView world =
+  List.map Layer.view world
 
-view : Map -> (Int, Int) -> Float -> Element
-view map (w,h) tickTime =
+view : World -> (Int, Int) -> Float -> Element
+view world (w,h) tickTime =
   let
-    newMap = update tickTime map
+    newWorld = update tickTime world
   in
-    collage w h (mapView newMap)
+    collage w h (worldView newWorld)
 
 main : Signal Element
 main =
-  Signal.map2 (view initialMap) Window.dimensions (Time.fps 30)
+  Signal.map2 (view initialWorld) Window.dimensions (Time.fps 30)
 
