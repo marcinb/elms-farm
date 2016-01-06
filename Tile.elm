@@ -13,6 +13,12 @@ type alias LifePhase = Int
 type Tile =
   Soil | Grass LifePhase
 
+-- UPDATE
+
+update : Float -> Tile -> Tile
+update tickTime tile =
+  tile
+
 -- VIEW
 
 defaultSize : Size

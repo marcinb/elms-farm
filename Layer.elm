@@ -6,7 +6,7 @@ import Array
 import Common exposing (..)
 import Tile
 
--- MODEL:
+-- MODEL
 
 type alias Layer =
   { size: Size,
@@ -19,7 +19,17 @@ initialize (w, h) tile =
     tiles = Array.repeat (w*h) (Just tile)
   }
 
--- VIEW:
+-- UPDATE
+
+update : Float -> Layer -> Layer
+update tickTime layer =
+  let
+    maybeNewTile = Maybe.map (Tile.update tickTime)
+    newTiles = Array.map maybeNewTile layer.tiles
+  in
+    { layer | tiles = newTiles }
+
+-- VIEW
 
 view : Layer -> Form
 view layer =
