@@ -22,7 +22,7 @@ groundLayer : Layer.Layer
 groundLayer = Layer.initialize mapSize Tile.Soil
 
 plantsLayer : Layer.Layer
-plantsLayer = Layer.initialize mapSize Tile.Grass
+plantsLayer = Layer.initialize mapSize (Tile.Grass 1)
 
 -- VIEW
 
