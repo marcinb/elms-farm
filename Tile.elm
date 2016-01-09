@@ -63,29 +63,21 @@ defaultView =
 view : Tile -> Form
 view tile =
   let
-    path = sheetPath tile
+    path = tilePath tile
     (w,h) = defaultSize
-    (x,y) = positionInSheet tile
   in
-    croppedImage (x * w, y * h) w h path
+    fittedImage w h path
       |> toForm
 
-sheetPath : Tile -> String
-sheetPath tile =
+tilePath : Tile -> String
+tilePath tile =
   let
     path filename =
       "assets/tiles/" ++ filename
   in
     case tile.kind of
       Soil ->
-        path "plowed_soil.png"
+        path "soil_0.png"
       Grass ->
-        path "tall_grass.png"
+        path "grass_" ++ toString  (lifePhase tile) ++ ".png"
 
-positionInSheet : Tile -> (Int, Int)
-positionInSheet tile =
-  case tile.kind of
-    Soil ->
-      (0,5)
-    Grass ->
-      ((lifePhase tile), 5)
