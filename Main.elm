@@ -29,9 +29,13 @@ plantsLayer = Layer.initialize worldSize (Tile.initialize Tile.Grass)
 
 -- UPDATE
 
-update : Float -> World -> World
-update tickTime world =
-  List.map (Layer.update tickTime) world
+type Action = Tick Float
+
+update : Action -> World -> World
+update action world =
+  case action of
+    Tick delta ->
+      List.map (Layer.update delta) world
 
 -- VIEW
 
@@ -49,11 +53,17 @@ view (w,h) world =
   in
     collage w h (List.map centeredLayerView world)
 
-world : Signal World
-world =
-  Signal.foldp update initialWorld (Time.fps 30)
+-- SIGNALS
+
+worldChange : Signal World
+worldChange =
+  Signal.foldp update initialWorld everyTick
+
+everyTick : Signal Action
+everyTick =
+  Signal.map Tick (Time.fps 30)
 
 main : Signal Element
 main =
-  Signal.map2 view Window.dimensions world
+  Signal.map2 view Window.dimensions worldChange
 
