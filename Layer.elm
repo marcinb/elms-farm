@@ -13,10 +13,17 @@ type alias Layer =
     tiles: Array.Array (Maybe Tile.Tile)
   }
 
+empty : Layer
+empty = 
+  { size = (0,0),
+    tiles = Array.empty
+  }
+
 initialize : Size -> Tile.Tile -> Layer
 initialize (w, h) tile =
-  { size = (w, h),
-    tiles = Array.repeat (w*h) (Just tile)
+  { empty |
+      size = (w, h),
+      tiles = Array.repeat (w*h) (Just tile)
   }
 
 -- UPDATE

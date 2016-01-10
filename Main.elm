@@ -61,9 +61,13 @@ update action game =
 
 -- VIEW
 
-view : Signal.Address Mode -> (Int, Int) -> Game -> Html.Html
-view address (w,h) game =
+view : Signal.Address Mode -> Game -> Html.Html
+view address game =
   let
+    (w,h) = 
+      Maybe.withDefault Layer.empty (List.head game.world)
+        |> Layer.viewSize
+
     centeredLayerView : Layer.Layer -> Form
     centeredLayerView layer =
       let
@@ -116,5 +120,5 @@ gameChange =
 
 main : Signal Html.Html
 main =
-  Signal.map2 (view inputMailbox.address) Window.dimensions gameChange
+  Signal.map (view inputMailbox.address) gameChange
 
