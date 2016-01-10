@@ -31,6 +31,14 @@ update tickTime layer =
 
 -- VIEW
 
+viewSize : Layer -> Size
+viewSize layer =
+  let
+    (w,h) = layer.size
+    (tileW, tileH) = Tile.defaultSize
+  in
+    (w*tileW, h*tileH)
+
 view : Layer -> Form
 view layer =
   let

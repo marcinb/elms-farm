@@ -15,7 +15,7 @@ import Tile
 type alias World = List Layer.Layer
 
 worldSize : Size
-worldSize = (10, 10)
+worldSize = (15, 15)
 
 initialWorld : World
 initialWorld =
@@ -35,13 +35,19 @@ update tickTime world =
 
 -- VIEW
 
-worldView : World -> List Form
-worldView world =
-  List.map Layer.view world
-
 view : (Int, Int) -> World -> Element
 view (w,h) world =
-  collage w h (worldView world)
+  let
+    centeredLayerView : Layer.Layer -> Form
+    centeredLayerView layer =
+      let
+        (layerW, layerH) = Layer.viewSize layer
+        offsetX = -(toFloat layerW / 2.0)
+        offsetY = -(toFloat layerH / 2.0)
+      in
+        move (offsetX, offsetY) (Layer.view layer)
+  in
+    collage w h (List.map centeredLayerView world)
 
 world : Signal World
 world =
