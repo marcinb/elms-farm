@@ -2,9 +2,11 @@ module Farm where
 
 import Graphics.Element exposing (..)
 import Graphics.Collage exposing (..)
+import Graphics.Input as Input
 import Array
 import Window
 import Time
+import Html
 
 import Common exposing (..)
 import Layer
@@ -12,7 +14,14 @@ import Tile
 
 -- MODEL
 
+type Mode = Play | Edit
+
 type alias World = List Layer.Layer
+
+type alias Game = 
+  { world : World,
+    mode : Mode
+  }
 
 worldSize : Size
 worldSize = (15, 15)
@@ -27,20 +36,33 @@ groundLayer = Layer.initialize worldSize (Tile.initialize Tile.Soil)
 plantsLayer : Layer.Layer
 plantsLayer = Layer.initialize worldSize (Tile.initialize Tile.Grass)
 
+initialGame =
+  { world = initialWorld,
+    mode = Play
+  }
+
 -- UPDATE
 
-type Action = Tick Float
 
-update : Action -> World -> World
-update action world =
+type Action = 
+  Tick Float
+  | ChangeMode Mode
+
+update : Action -> Game -> Game
+update action game =
   case action of
     Tick delta ->
-      List.map (Layer.update delta) world
+      let 
+        newWorld = List.map (Layer.update delta) game.world 
+      in
+        { game | world = newWorld }
+    ChangeMode newMode ->
+      { game | mode = newMode }
 
 -- VIEW
 
-view : (Int, Int) -> World -> Element
-view (w,h) world =
+view : Signal.Address Mode -> (Int, Int) -> Game -> Html.Html
+view address (w,h) game =
   let
     centeredLayerView : Layer.Layer -> Form
     centeredLayerView layer =
@@ -51,19 +73,48 @@ view (w,h) world =
       in
         move (offsetX, offsetY) (Layer.view layer)
   in
-    collage w h (List.map centeredLayerView world)
+    Html.div []
+      [ Html.h1 [] 
+        [ show game.mode
+            |> Html.fromElement
+        ],
+        collage w h (List.map centeredLayerView game.world)
+          |> Html.fromElement,
+        toggleModeButton game.mode address
+          |> Html.fromElement
+      ]
+
+toggleModeButton : Mode -> Signal.Address Mode -> Element
+toggleModeButton mode address =
+  let
+    newMode = case mode of
+      Play -> Edit
+      _ -> Play
+
+    msg = Signal.message address newMode
+  in
+    Input.button msg "Toggle Mode"
 
 -- SIGNALS
 
-worldChange : Signal World
-worldChange =
-  Signal.foldp update initialWorld everyTick
+inputMailbox : Signal.Mailbox Mode
+inputMailbox = Signal.mailbox Play
+
+modeChange : Signal Action
+modeChange = Signal.map ChangeMode inputMailbox.signal
 
 everyTick : Signal Action
 everyTick =
   Signal.map Tick (Time.fps 30)
 
-main : Signal Element
+gameChange : Signal Game
+gameChange =
+  let
+    input = Signal.mergeMany [everyTick, modeChange]
+  in
+    Signal.foldp update initialGame input
+
+main : Signal Html.Html
 main =
-  Signal.map2 view Window.dimensions worldChange
+  Signal.map2 (view inputMailbox.address) Window.dimensions gameChange
 
