@@ -9,22 +9,29 @@ import Tile
 -- MODEL
 
 type alias Layer =
-  { size: Size,
-    tiles: Array.Array (Maybe Tile.Tile)
+  { size : Size,
+    tiles : Array.Array (Maybe Tile.Tile),
+    tileSize : Size
   }
 
-empty : Layer
+initialize : Maybe Tile.Tile -> Size -> Layer
+initialize tile (w,h) =
+  { size = (w, h),
+    tiles = Array.repeat (w*h) tile,
+    tileSize = (32,32)
+  }
+
+empty : Size -> Layer
 empty = 
-  { size = (0,0),
-    tiles = Array.empty
-  }
+  initialize Nothing
 
-initialize : Size -> Tile.Tile -> Layer
-initialize (w, h) tile =
-  { empty |
-      size = (w, h),
-      tiles = Array.repeat (w*h) (Just tile)
-  }
+soil : Size -> Layer
+soil =
+  initialize (Just Tile.soil)
+
+grass : Size -> Layer
+grass = 
+  initialize (Just Tile.grass)
 
 -- UPDATE
 
@@ -42,7 +49,7 @@ viewSize : Layer -> Size
 viewSize layer =
   let
     (w,h) = layer.size
-    (tileW, tileH) = Tile.defaultSize
+    (tileW, tileH) = layer.tileSize
   in
     (w*tileW, h*tileH)
 
@@ -50,24 +57,26 @@ view : Layer -> Form
 view layer =
   let
     (w, h) = layer.size
+    defaultView = Tile.defaultView layer.tileSize
+    draw : Int -> Maybe Tile.Tile -> Form
     draw = (\i tile -> 
       let column = i % w
           row = i // h
-          (tileW, tileH) = Tile.defaultSize
+          (tileW, tileH) = layer.tileSize
           offsetX = (toFloat column) * (toFloat tileW)
           offsetY = (toFloat row) * (toFloat tileH)
       in
-        move (offsetX, offsetY) (tileView tile)
+        move (offsetX, offsetY) (tileViewWithDefault defaultView tile)
       )
   in
     Array.indexedMap draw layer.tiles
       |> Array.toList
       |> group
 
-tileView : Maybe Tile.Tile -> Form
-tileView tile =
+tileViewWithDefault : Form -> Maybe Tile.Tile -> Form
+tileViewWithDefault default tile =
   case tile of
     Just tile ->
       Tile.view tile
     Nothing ->
-      Tile.defaultView
+      default

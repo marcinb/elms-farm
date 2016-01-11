@@ -16,16 +16,27 @@ type Kind =
 
 type alias Tile =
   { kind : Kind,
+    size : Size,
     bornAt : Float,
     lifeTime : Float
   }
 
-initialize : Kind -> Tile
-initialize kind =
+initialize : Size -> Kind -> Tile
+initialize size kind =
   { kind = kind,
+    size = size,
     bornAt = 0.0,
     lifeTime = 0.0
   }
+
+base : Tile
+base = initialize (32,32) Soil
+
+soil : Tile
+soil = base
+
+grass : Tile
+grass = { base | kind = Grass }
 
 lifePhase : Tile -> Int
 lifePhase tile =
@@ -48,14 +59,11 @@ update tickTime tile =
     
 -- VIEW
 
-defaultSize : Size
-defaultSize = (32, 32)
-
 -- Empty tile, render as transparent rect.
-defaultView : Form
-defaultView =
+defaultView : Size -> Form
+defaultView size =
   let
-    (w,h) = defaultSize 
+    (w,h) = size
   in
     rect (toFloat w) (toFloat h)
       |> filled (Color.rgba 0 0 0 0)
@@ -64,7 +72,7 @@ view : Tile -> Form
 view tile =
   let
     path = tilePath tile
-    (w,h) = defaultSize
+    (w,h) = tile.size
   in
     fittedImage w h path
       |> toForm

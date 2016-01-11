@@ -28,13 +28,7 @@ worldSize = (15, 15)
 
 initialWorld : World
 initialWorld =
-  [ groundLayer, plantsLayer ]
-
-groundLayer : Layer.Layer
-groundLayer = Layer.initialize worldSize (Tile.initialize Tile.Soil)
-
-plantsLayer : Layer.Layer
-plantsLayer = Layer.initialize worldSize (Tile.initialize Tile.Grass)
+  [ Layer.soil worldSize, Layer.grass worldSize ]
 
 initialGame =
   { world = initialWorld,
@@ -42,7 +36,6 @@ initialGame =
   }
 
 -- UPDATE
-
 
 type Action = 
   Tick Float
@@ -64,9 +57,7 @@ update action game =
 view : Signal.Address Mode -> Game -> Html.Html
 view address game =
   let
-    (w,h) = 
-      Maybe.withDefault Layer.empty (List.head game.world)
-        |> Layer.viewSize
+    (w,h) = Layer.viewSize (Layer.empty worldSize)
 
     centeredLayerView : Layer.Layer -> Form
     centeredLayerView layer =
