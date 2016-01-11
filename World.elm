@@ -1,4 +1,4 @@
-module World where
+module World (World, initialize, update, view) where
 
 import Graphics.Element exposing (..)
 import Graphics.Collage exposing (..)

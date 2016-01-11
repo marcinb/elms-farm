@@ -1,4 +1,4 @@
-module Tile where
+module Tile (Tile, soil, grass, update, view, defaultView)  where
 
 import Graphics.Element exposing (..)
 import Graphics.Collage exposing (..)

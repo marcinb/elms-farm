@@ -1,4 +1,4 @@
-module Layer where
+module Layer (Layer, empty, soil, grass, update, view, viewSize) where
 
 import Graphics.Collage exposing (..)
 import Array
