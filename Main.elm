@@ -16,22 +16,27 @@ import Tile
 
 type Mode = Play | Edit
 
-type alias World = List Layer.Layer
+type alias World = 
+  { size : Size,
+    layers : List Layer.Layer
+  }
 
 type alias Game = 
   { world : World,
     mode : Mode
   }
 
-worldSize : Size
-worldSize = (15, 15)
-
-initialWorld : World
-initialWorld =
-  [ Layer.soil worldSize, Layer.grass worldSize ]
+initialWorld : Size -> World
+initialWorld size =
+  { size = size,
+    layers =
+      [ Layer.soil size, 
+        Layer.grass size
+      ]
+  }
 
 initialGame =
-  { world = initialWorld,
+  { world = initialWorld (15, 15),
     mode = Play
   }
 
@@ -46,7 +51,8 @@ update action game =
   case action of
     Tick delta ->
       let 
-        newWorld = List.map (Layer.update delta) game.world 
+        world = game.world
+        newWorld = { world | layers = List.map (Layer.update delta) world.layers }
       in
         { game | world = newWorld }
     ChangeMode newMode ->
@@ -57,7 +63,7 @@ update action game =
 view : Signal.Address Mode -> Game -> Html.Html
 view address game =
   let
-    (w,h) = Layer.viewSize (Layer.empty worldSize)
+    (w,h) = Layer.viewSize (Layer.empty game.world.size)
 
     centeredLayerView : Layer.Layer -> Form
     centeredLayerView layer =
@@ -73,7 +79,7 @@ view address game =
         [ show game.mode
             |> Html.fromElement
         ],
-        collage w h (List.map centeredLayerView game.world)
+        collage w h (List.map centeredLayerView game.world.layers)
           |> Html.fromElement,
         toggleModeButton game.mode address
           |> Html.fromElement
