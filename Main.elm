@@ -1,12 +1,14 @@
 module Farm where
 
-import Graphics.Element exposing (..)
+import Graphics.Element exposing (Element, show)
 import Graphics.Collage exposing (..)
 import Graphics.Input as Input
 import Window
 import Time
 import Html
+import Mouse
 
+import Common exposing (..)
 import World
 
 -- MODEL
@@ -28,12 +30,15 @@ initialGame =
 type Action = 
   Tick Float
   | ChangeMode Mode
+  | Click Position
 
 update : Action -> Game -> Game
 update action game =
   case action of
     Tick delta ->
-        { game | world = World.update delta game.world }
+      { game | world = World.update delta game.world }
+    Click (x,y) ->
+      game
     ChangeMode newMode ->
       { game | mode = newMode }
 
@@ -71,14 +76,21 @@ inputMailbox = Signal.mailbox Play
 modeChange : Signal Action
 modeChange = Signal.map ChangeMode inputMailbox.signal
 
-everyTick : Signal Action
-everyTick =
+ticks : Signal Action
+ticks =
   Signal.map Tick (Time.fps 30)
+
+clicks : Signal Action
+clicks =
+  let
+    clicksPosition = Signal.sampleOn Mouse.clicks Mouse.position
+  in
+    Signal.map Click clicksPosition
 
 gameChange : Signal Game
 gameChange =
   let
-    input = Signal.mergeMany [everyTick, modeChange]
+    input = Signal.mergeMany [ticks, clicks, modeChange]
   in
     Signal.foldp update initialGame input
 
